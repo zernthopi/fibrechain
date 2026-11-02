@@ -143,5 +143,6 @@ src/fibrechain/
 ## Notes
 
 - No prescription or instrument data is distributed with this repository.
-- Licence: to be chosen.
-- Author: Thomas Pichon.
+- Licence: BSD 3-Clause, see [`LICENSE`](LICENSE).
+- Citation: see [`CITATION.cff`](CITATION.cff).
+- Author: Thomas Pichon, thomas.pichon@lam.fr.

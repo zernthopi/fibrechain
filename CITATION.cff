@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use fibrechain, please cite it as below."
+title: "fibrechain: lenslet-to-detector throughput of a fibre-fed spectrograph"
+type: software
+authors:
+  - family-names: Pichon
+    given-names: Thomas
+    email: thomas.pichon@lam.fr
+version: 1.0.0
+date-released: 2026-11-02
+license: BSD-3-Clause
+repository-code: "https://github.com/zernthopi/fibrechain"

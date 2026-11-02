@@ -1,0 +1,10 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+build/
+results/
+# instrument data stays local
+*.zmx
+*.zos
+*prescription*.txt
+config.toml

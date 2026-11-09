@@ -119,6 +119,16 @@ def intersect(s, p, d):
             t = t - dt
             if not np.any(np.abs(dt) >= 1e-10):      # converged (NaN rays ignored)
                 break
+    if not plane:
+        # Newton started on the vertex plane can leave the domain of the sag on
+        # strongly curved surfaces (e.g. a field lens hit by steep rays): such
+        # rays are re-solved by bracketing the first crossing along the ray.
+        q = p + t[:, None] * d
+        z, _, _, bad = sag_and_grad(s, q[:, 0], q[:, 1])
+        res = np.abs(q[:, 2] - z)
+        redo = bad | ~np.isfinite(res) | (res > 1e-6)
+        if redo.any():
+            t[redo] = _bracket(s, p[redo], d[redo], t[redo])
     q = p + t[:, None] * d
     if plane:
         gx = gy = np.zeros(len(q)); bad = np.zeros(len(q), bool)
@@ -128,6 +138,47 @@ def intersect(s, p, d):
     n /= np.linalg.norm(n, axis=1)[:, None]
     fail = bad | ~np.isfinite(q).all(1) | ~np.isfinite(n).all(1)
     return q, n, fail
+
+
+def _bracket(s, p, d, t0, n=801, chunk=1500):
+    """First root of z(t) - sag(x(t), y(t)) along each ray, by scanning t over
+    the axial extent of the surface and refining by bisection (vectorised).
+    Rays with no crossing get NaN (reported as failed)."""
+    R = s.get("R", np.inf)
+    H = 2.0 * (abs(R) if np.isfinite(R) else 1e3)
+    dz = np.where(np.abs(d[:, 2]) < 1e-12, 1e-12, d[:, 2])
+    ta, tb = (-H - p[:, 2]) / dz, (H - p[:, 2]) / dz
+    lo = np.maximum(np.minimum(ta, tb), -1e-9)          # only forward along the ray
+    hi = np.maximum(ta, tb)
+    out = np.full(len(p), np.nan)
+    u = np.linspace(0, 1, n)
+
+    def f_of(T, P, D):
+        Q = P[:, None, :] + T[..., None] * D[:, None, :]
+        z, _, _, bad = sag_and_grad(s, Q[..., 0].ravel(), Q[..., 1].ravel())
+        z = z.reshape(T.shape); bad = bad.reshape(T.shape)
+        return np.where(bad | ~np.isfinite(z), np.nan, Q[..., 2] - z)
+
+    for a in range(0, len(p), chunk):
+        sl = slice(a, a + chunk)
+        P, D, L, Hh = p[sl], d[sl], lo[sl], hi[sl]
+        T = L[:, None] + u[None, :] * (Hh - L)[:, None]
+        F = f_of(T, P, D)
+        ok = np.isfinite(F[:, :-1]) & np.isfinite(F[:, 1:]) & (np.sign(F[:, :-1]) * np.sign(F[:, 1:]) <= 0)
+        has = ok.any(1) & (Hh > L)
+        k = np.argmax(ok, 1)
+        r = np.arange(len(P))
+        ta_, tb_ = T[r, k], T[r, k + 1]
+        fa = F[r, k]
+        for _ in range(60):
+            tm = 0.5 * (ta_ + tb_)
+            fm = f_of(tm[:, None], P, D)[:, 0]
+            same = np.sign(fm) == np.sign(fa)
+            ta_ = np.where(same, tm, ta_); fa = np.where(same, fm, fa)
+            tb_ = np.where(same, tb_, tm)
+        res = 0.5 * (ta_ + tb_)
+        out[sl] = np.where(has, res, np.nan)
+    return out
 
 
 def aperture_ok(s, q):

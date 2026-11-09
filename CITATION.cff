@@ -6,7 +6,7 @@ authors:
   - family-names: Pichon
     given-names: Thomas
     email: thomas.pichon@lam.fr
-version: 1.0.0
-date-released: 2026-11-02
+version: 1.1.0
+date-released: 2026-11-09
 license: BSD-3-Clause
 repository-code: "https://github.com/zernthopi/fibrechain"

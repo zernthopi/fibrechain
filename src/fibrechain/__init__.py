@@ -18,4 +18,4 @@ from .checks import uniform_rays, hexagon_samples, direct_trace, working_fnumber
 from .layout import UnfoldedLayout
 from .pipeline import run, validate
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fibrechain"
-version = "1.0.0"
+version = "1.1.0"
 description = "Lenslet-to-detector throughput of a fibre-fed spectrograph: fibre angular distribution x independent real ray trace of the OpticStudio prescription"
 readme = "README.md"
 requires-python = ">=3.11"

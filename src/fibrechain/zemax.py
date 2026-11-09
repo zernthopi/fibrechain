@@ -2,7 +2,7 @@
 Reader for the Zemax OpticStudio "System/Prescription Data" text export
 (Analyze > Reports > Prescription Data, all sections, saved as .txt).
 
-Sections used
+Sections used (SZERNSAG: Zernike Standard Sag terms, Noll order)
   * SURFACE DATA SUMMARY      type, radius, glass (MIRROR flag), conic
   * SURFACE DATA DETAIL       aperture (circular / rectangular / rectangular
                               obscuration / floating, with decenters), even-
@@ -84,6 +84,12 @@ def parse_prescription(path):
             s["ap_type"] = v.split(",")[0]
         elif k in ("Minimum Radius", "Maximum Radius", "X Half Width", "Y Half Width",
                    "X- Decenter", "Y- Decenter"):
+            s[k] = _num(v)
+        elif k.startswith("Zernike Term"):
+            s.setdefault("zern", {})[int(k.split()[-1])] = _num(v)
+        elif k == "Normalization Radius":
+            s["zern_rnorm"] = _num(v)
+        elif k in ("Zernike Decenter X", "Zernike Decenter Y"):
             s[k] = _num(v)
         elif k.startswith("Coefficient on r^"):
             p = int(k.split("^")[1])

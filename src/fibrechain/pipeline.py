@@ -5,7 +5,7 @@ End-to-end computation for one configuration. Writes to `outdir`:
   trans_maps.npz          blocking surface per fibre-output direction (maps.py)
   stage_transmissions.npz azimuthally averaged t_pre, t_obs, t_all (budget.py)
   budget.csv              per kernel / FRD / field / wavelength
-  budget_summary.csv      on-axis and slit-weighted, wavelength-averaged
+  budget_summary.csv      on-axis and slit average (config field weights), wavelength-averaged
   uniform_rays.npy        OpticStudio-like uniform-ray reference (checks.py)
   hexagon_direct.npy      direct trace of the scrambled lenslet hexagon
   fnumber_check.npy       working F/#: OpticStudio F/# Data vs this tracer

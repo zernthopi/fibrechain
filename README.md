@@ -56,7 +56,7 @@ writes to `build/`:
 | `fibre_output.npz` | encircled energy EE(θ) of the fibre output, with / without `K_geo`, all FRD levels; maps |
 | `trans_maps.npz` | id of the stopping surface for every fibre-output direction (field × λ × θ × φ) |
 | `stage_transmissions.npz` | azimuthal transmission per ring: before camera / after obscuration / detector |
-| `budget.csv`, `budget_summary.csv` | throughput and losses per kernel × FRD × field × λ; on-axis and slit-weighted |
+| `budget.csv`, `budget_summary.csv` | throughput and losses per kernel × FRD × field × λ; on-axis and slit average (config field weights; equal weights = plain slit mean) |
 | `uniform_rays.npy` | OpticStudio-like uniform-ray reference, losses by contributor |
 | `hexagon_direct.npy` | direct ray-by-ray trace of the scrambled lenslet hexagon |
 | `fnumber_check.npy` | working F/#: OpticStudio vs fibrechain |
@@ -77,7 +77,7 @@ first_surface  = <int>                         # slit surface (fibre exit side)
 grating_sign   = 1                             # VPH sign convention (+1 or -1)
 wavelengths_um = [<λ1>, <λ2>, ...]             # in the order of the export
 fields_mm      = [[<fx>, <fy>], ...]
-field_weights  = [<w1>, ...]
+field_weights  = [1, 1, ...]                   # slit-average weights; equal = plain mean
 
 [spectrograph.pupil]          # "object NA" aperture, curved slit about the stop
 r_obj  = <mm>                 # slit radius of curvature

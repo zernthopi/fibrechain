@@ -66,7 +66,8 @@ def energy_budget(maps, fibre, fields, field_weights, stages, mirror_fields=True
 
 
 def summarise(rows):
-    """On-axis and slit-weighted averages (field weights), mean over wavelength."""
+    """On-axis and slit averages (weighted by the config field weights; equal
+    weights give the plain slit mean), mean over wavelength."""
     out = []
     for where in ("on-axis", "slit avg"):
         for var in ("K", "noK"):

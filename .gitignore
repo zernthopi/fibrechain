@@ -8,3 +8,7 @@ results/
 *.zos
 *prescription*.txt
 config.toml
+# local working files
+*.zip
+*.bundle
+logs/
